@@ -2,9 +2,9 @@
 
 📌 Project Overview
 
-This project is an end-to-end Data Engineering Pipeline that processes movie datasets using a modern architecture. It implements ETL pipelines, data warehousing, and interactive dashboards.
+This project is an end-to-end Data Engineering Pipeline designed to process and analyze movie datasets. It demonstrates ETL pipeline development, data warehousing, and dashboard creation using modern tools.
 
-The pipeline follows a Medallion Architecture (Bronze → Silver → Gold) and uses Apache Airflow for orchestration, Snowflake for storage, and Streamlit for visualization.
+The pipeline follows a Medallion Architecture (Bronze → Silver → Gold) using Apache Airflow for orchestration, Snowflake as the data warehouse, and Streamlit for visualization.
 
 ---
 
@@ -135,9 +135,10 @@ streamlit run dashboard/app.py
 
 ❗ Important Notes
 
-- Credentials are masked for security
+- Credentials are masked ("xxxxxx") for security
 - Data files (CSV/Parquet) are ignored using ".gitignore"
-- Replace credentials before running locally
+- Update credentials before running locally
+- Ensure Snowflake warehouse "COMPUTE_WH" is available
 
 ---
 
