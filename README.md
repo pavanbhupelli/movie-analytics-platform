@@ -1,172 +1,312 @@
-🎬 Movie Data Engineering Pipeline (Airflow + Snowflake + Streamlit)
+🎬 Movie Analytics & Media Content Analysis Platform
 
-📌 Project Overview
-
-This project is an end-to-end Data Engineering Pipeline designed to process and analyze movie datasets. It demonstrates ETL pipeline development, data warehousing, and dashboard creation using modern tools.
-
-The pipeline follows a Medallion Architecture (Bronze → Silver → Gold) using Apache Airflow for orchestration, Snowflake as the data warehouse, and Streamlit for visualization.
+"Python" (https://img.shields.io/badge/Python-3.10+-blue)
+"PySpark" (https://img.shields.io/badge/PySpark-Processing-orange)
+"Airflow" (https://img.shields.io/badge/Airflow-Orchestration-red)
+"Snowflake" (https://img.shields.io/badge/Snowflake-Data%20Warehouse-blue)
+"Architecture" (https://img.shields.io/badge/Data%20Model-Star%20Schema-green)
+"Status" (https://img.shields.io/badge/Status-Production%20Ready-brightgreen)
 
 ---
 
-🏗️ Architecture
+📌 Project Overview
 
-- Bronze Layer → Raw data ingestion (CSV files)
-- Silver Layer → Cleaned and transformed data
-- Gold Layer → Aggregated and analytics-ready data
-- Airflow DAG → Automates ETL pipeline
-- Snowflake → Data warehouse
-- Streamlit → Dashboard for insights
+This project is a complete end-to-end Data Engineering Platform designed to analyze movie data (Box Office + OTT) and media content analytics.
+
+The system integrates multiple datasets, processes them using PySpark ETL pipelines, and builds a Star Schema Data Warehouse for efficient analytics. Apache Airflow is used for orchestration, Snowflake for storage, and Streamlit for visualization.
+
+---
+
+🎯 Objectives
+
+- Build a scalable end-to-end ETL pipeline
+- Process multi-source datasets
+- Implement Medallion Architecture
+- Design Star Schema Data Model
+- Generate business insights
+- Develop interactive dashboards
+
+---
+
+🏗️ Architecture Overview
+
+🔷 Medallion Architecture
+
+- Bronze Layer → Raw data ingestion (CSV files into AWS S3)
+- Silver Layer → Data cleaning, transformation, standardization using PySpark
+- Gold Layer → Aggregated analytics-ready datasets
+
+All layers are stored in S3 as Parquet and loaded into Snowflake.
+
+---
+
+🔄 Data Flow
+
+Raw Data → Bronze → Silver → Gold → Snowflake → Streamlit Dashboard → Insights
 
 ---
 
 ⚙️ Tech Stack
 
 - Python
+- PySpark
 - Apache Airflow
+- AWS S3
 - Snowflake
 - Streamlit
 - Pandas
-- Matplotlib / Plotly
-- Docker (optional)
+- SQL
 
 ---
 
 📂 Project Structure
 
 project/
-│── airflow/
-│   ├── dags/
-│   │   └── movie_pipeline_dag.py
-│   ├── logs/
-│
-│── dashboard/
-│   └── app.py
-│
-│── data/
-│   ├── bronze/
-│   ├── silver/
-│   ├── gold/
-│
+│── airflow/dags/movie_pipeline.py
 │── etl/
 │   ├── bronze_reader.py
-│   ├── silver_transform.py
-│   ├── gold_transform.py
-│   ├── snowflake_load.py
-│
+│   ├── silver_pyspark.py
+│   ├── gold_pyspark.py
+│   └── snowflake_load.py
+│── data/bronze/
+│── data/silver/
+│── data/gold/
+│── dashboard/app.py
+│── run_pipeline.py
 │── requirements.txt
-│── docker-compose.yaml
-│── README.md
 
 ---
 
-🔄 ETL Pipeline Flow
+🔄 ETL Pipeline (Airflow DAG)
 
 1. Bronze Layer
 
-- Reads raw CSV files (Netflix, Amazon Prime, Disney+)
-- Stores raw data without transformation
+- Reads CSV files from S3
+- Uses boto3 copy
+- No transformation
 
-2. Silver Layer
+2. Silver Layer (PySpark)
 
-- Removes null values and duplicates
-- Cleans and standardizes columns
+- Column standardization
+- Null handling
+- Data cleaning
 
 3. Gold Layer
 
-- Performs aggregations (genre, ratings, release year)
-- Prepares analytics-ready datasets
+- Star schema creation
+- SCD Type 2 implementation
+- Aggregations
 
-4. Snowflake Loading
+4. Snowflake Load
 
-- Loads transformed data into Snowflake tables
-- Uses warehouse: "COMPUTE_WH"
+- Uses COPY INTO
+- Loads Parquet data into warehouse
 
-5. Airflow Automation
+Pipeline Flow:
+Bronze → Silver → Gold → Snowflake
 
-- DAG schedules and runs pipeline automatically
-- Handles task dependencies
+---
+
+⭐ Star Schema (Movie Analytics)
+
+Dimension Tables
+
+dim_movies
+
+- movie_id (Primary Key)
+- title
+- genre
+- rating
+
+dim_platform
+
+- platform_id (Primary Key)
+- platform_name
+
+dim_location
+
+- location_id (Primary Key)
+- city
+
+dim_theatre
+
+- theatre_id (Primary Key)
+- theatre_name
+- city
+- start_date
+- is_current
+
+---
+
+Fact Tables
+
+fact_streaming
+
+- fact_id (Primary Key)
+- movie_id (Foreign Key)
+- platform_id (Foreign Key)
+- release_year
+
+fact_theatre
+
+- theatre_id (Foreign Key)
+- city
+- avg_ticket_price
+- total_seats
+
+Grain: One row per movie/platform or theatre record
+
+---
+
+⭐ Star Schema (Media / YouTube Analytics)
+
+Dimension Tables
+
+dim_channel
+
+- channel_id (Primary Key)
+- channel_title
+
+dim_category
+
+- category_id (Primary Key)
+- category_name
+
+---
+
+Fact Table
+
+fact_youtube
+
+- video_id (Primary Key)
+- channel_id (Foreign Key)
+- category_id (Foreign Key)
+- published_date
+- view_count
+- like_count
+- comment_count
+- engagement_score
+
+Grain: One row per video
+
+---
+
+⭐ Star Schema Model
+
+dim_channel → fact_youtube ← dim_category
+
+✔ Central fact table
+✔ Surrounding dimension tables
+✔ Optimized for analytics queries
+
+---
+
+📊 Data Marts
+
+- mart_top_videos → Top videos by views
+- mart_channel_performance → Channel performance metrics
+- mart_movie_performance → Movie analytics insights
+
+---
+
+❄️ Snowflake Data Warehouse
+
+Configuration:
+
+- Database → MOVIE_DB
+- Schema → MOVIE_SCHEMA
+- Warehouse → COMPUTE_WH
+- File Format → PARQUET
+
+Tables Loaded:
+
+- dim_movies
+- dim_platform
+- dim_location
+- dim_theatre
+- fact_streaming
+- fact_theatre
+
+Load Method:
+COPY INTO tables FROM S3 stage
 
 ---
 
 📊 Dashboard (Streamlit)
 
-- Interactive visualizations
-- Movie trends and analytics
-- Genre-based insights
-- Platform comparison (Netflix vs Prime vs Disney+)
+Features:
 
-Run dashboard:
-
-streamlit run dashboard/app.py
-
----
-
-🚀 How to Run the Project
-
-1. Clone Repository
-
-git clone https://github.com/your-username/movie-data-pipeline.git
-cd movie-data-pipeline
-
-2. Create Virtual Environment
-
-python -m venv venv
-venv\Scripts\activate   # Windows
-
-3. Install Dependencies
-
-pip install -r requirements.txt
-
-4. Run Airflow
-
-airflow standalone
-
-5. Trigger DAG
-
-- Open Airflow UI
-- Enable "movie_pipeline_dag"
-- Run the pipeline
-
-6. Run Dashboard
-
-streamlit run dashboard/app.py
+- Movies trend analysis
+- Genre distribution
+- Ratings analysis
+- OTT platform comparison
+- Theatre insights
+- KPI metrics (movies, platforms, cities)
 
 ---
 
-❗ Important Notes
+🔐 Security & Best Practices
 
-- Credentials are masked ("xxxxxx") for security
-- Data files (CSV/Parquet) are ignored using ".gitignore"
-- Update credentials before running locally
-- Ensure Snowflake warehouse "COMPUTE_WH" is available
+- No hardcoded credentials
+- .env configuration used
+- .gitignore for sensitive files
+- Modular ETL design
+- Scalable architecture
+- Star schema optimization
 
 ---
 
-📈 Key Features
+🚀 How to Run
+
+1. Install Dependencies
+   pip install -r requirements.txt
+
+2. Configure Environment
+   Add Snowflake credentials
+   Add AWS credentials
+
+3. Run Airflow
+   airflow standalone
+
+4. Run ETL Pipeline
+   python run_pipeline.py
+
+5. Run Dashboard
+   streamlit run dashboard/app.py
+
+---
+
+🎯 Key Highlights
 
 - End-to-end ETL pipeline
-- Automated workflows using Airflow
-- Scalable cloud data warehouse (Snowflake)
-- Interactive dashboard with Streamlit
-- Clean Medallion Architecture
+- Medallion Architecture implementation
+- Star Schema Data Warehouse
+- PySpark-based transformations
+- Airflow automation
+- Snowflake integration
+- Interactive dashboard
 
 ---
 
-🎯 Use Cases
+📌 Future Enhancements
 
-- Data Engineering Projects
-- ETL Pipeline Demonstration
-- Dashboard Development
-- Interview / Portfolio Project
-
----
-
-👨‍💻 Author
-
-Pavan Kumar
+- Real-time streaming (Kafka)
+- ML recommendation system
+- Docker deployment
+- CI/CD pipeline
 
 ---
 
-⭐ If you like this project
+👤 Author
 
-Give it a star ⭐ on GitHub
+Pavan Kumar Bhupelli
+
+---
+
+⭐ Support
+
+If you like this project:
+
+- Star the repository
+- Fork and contribute
+- Share with others
