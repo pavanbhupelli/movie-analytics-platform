@@ -1,11 +1,48 @@
-🎬 Movie Analytics & Media Content Analysis Platform
+# 🎬 Movie Analytics & Media Content Analysis Platform  
 
-"Python" (https://img.shields.io/badge/Python-3.10+-blue)
-"PySpark" (https://img.shields.io/badge/PySpark-Processing-orange)
-"Airflow" (https://img.shields.io/badge/Airflow-Orchestration-red)
-"Snowflake" (https://img.shields.io/badge/Snowflake-Data%20Warehouse-blue)
-"Architecture" (https://img.shields.io/badge/Data%20Model-Star%20Schema-green)
-"Status" (https://img.shields.io/badge/Status-Production%20Ready-brightgreen)
+![Python](https://img.shields.io/badge/Python-3.10+-blue)
+![PySpark](https://img.shields.io/badge/PySpark-Processing-orange)
+![Airflow](https://img.shields.io/badge/Airflow-Orchestration-red)
+![Snowflake](https://img.shields.io/badge/Snowflake-Data%20Warehouse-blue)
+![Architecture](https://img.shields.io/badge/Data%20Model-Star%20Schema-green)
+![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)
+
+---
+
+## 📌 Project Overview  
+
+This project is a complete end-to-end Data Engineering platform designed to analyze movie data (Box Office + OTT) and media content (YouTube analytics).
+
+It integrates multiple datasets, processes them using PySpark ETL pipelines, and builds a Star Schema Data Warehouse for efficient analytics. Apache Airflow is used for orchestration, Snowflake for storage, and Streamlit for visualization.
+
+---
+
+## 🎯 Objectives  
+
+- Build a scalable end-to-end ETL pipeline  
+- Process multi-source datasets  
+- Implement Medallion Architecture  
+- Design a Star Schema Data Model  
+- Generate business insights  
+- Develop interactive dashboards  
+
+---
+
+## 🏗️ Architecture Overview  
+
+### 🔷 Medallion Architecture  
+
+- **Bronze Layer** → Raw data ingestion (CSV files into AWS S3)  
+- **Silver Layer** → Data cleaning, transformation, standardization using PySpark  
+- **Gold Layer** → Aggregated analytics-ready datasets  
+
+All layers are stored in S3 as Parquet and loaded into Snowflake.
+
+---
+
+### 🔄 Data Flow  
+
+
 
 ---
 
